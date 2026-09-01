@@ -1,0 +1,27 @@
+# TempMailGrab
+
+> TempMailGrab is a privacy-first temporary email service with private 24-hour inboxes, real-time WebSocket delivery, automatic OTP and verification-link extraction, attachments, and a developer REST API.
+
+## Primary pages
+
+- [Temporary email inbox](https://tempmailgrab.com/): Generate and use a private temporary inbox.
+- [Developer API](https://tempmailgrab.com/api-docs): Authentication, endpoints, webhooks, custom domains, examples, and OpenAPI.
+- [OpenAPI 3.1 document](https://tempmailgrab.com/api/openapi.json): Machine-readable API contract.
+- [JavaScript SDK](https://www.npmjs.com/package/tempmailgrab): Typed zero-dependency API client, Playwright fixtures, and webhook verification. [Source](https://github.com/sathishbanoth-coder/tempmailgrab-js).
+- [Email testing API](https://tempmailgrab.com/email-testing-api): Playwright, Cypress, and CI email testing workflows.
+- [Temporary email guide](https://tempmailgrab.com/guides): When temporary email is appropriate and when it is not.
+- [Resource center](https://tempmailgrab.com/resources): Curated entry points for temporary email, privacy, developer testing, and compatibility research.
+- [Compatibility research](https://tempmailgrab.com/research/disposable-email-compatibility): Tested platform compatibility, methodology, and reuse terms.
+- [Compatibility dataset](https://tempmailgrab.com/research/disposable-email-compatibility.json): CC BY 4.0 machine-readable data.
+- [Compatibility dataset CSV](https://tempmailgrab.com/research/disposable-email-compatibility.csv): Tabular CC BY 4.0 distribution.
+- [Security](https://tempmailgrab.com/security): Architecture, retention, HTML sanitization, and responsible disclosure.
+- [Privacy](https://tempmailgrab.com/privacy): Data collection, retention, and deletion policy.
+- [About](https://tempmailgrab.com/about): Product purpose, architecture, and editorial responsibility.
+
+## Feeds and discovery
+
+- [Blog RSS](https://tempmailgrab.com/blog/rss.xml)
+- [XML sitemap](https://tempmailgrab.com/sitemap.xml)
+- [Service status](https://tempmailgrab.com/status)
+
+Content may be cited with a direct link to the relevant canonical page. The compatibility dataset is licensed CC BY 4.0; other site content remains proprietary unless stated otherwise.

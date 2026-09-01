@@ -1,0 +1,100 @@
+generated: '2026-09-01'
+method: derived
+source: openapi/tempmailgrab-openapi.json
+enriched_from:
+- https://tempmailgrab.com/api-docs
+- https://tempmailgrab.com/security
+- https://tempmailgrab.com/.well-known/security.txt
+- security/tempmailgrab-domain-security.yml
+standards:
+- id: openapi-3.1
+  conforms: true
+  evidence: >-
+    openapi/tempmailgrab-openapi.json declares openapi 3.1.2 with 15 operations, unique operationIds,
+    summaries on every operation, 5 reusable components.schemas, both securitySchemes defined and applied
+    at the document level, and a top-level 3.1 `webhooks` object.
+- id: json-schema-2020-12
+  conforms: true
+  evidence: >-
+    jsonSchemaDialect is declared as https://json-schema.org/draft/2020-12/schema in the OpenAPI document.
+- id: rfc9116-security-txt
+  conforms: true
+  evidence: >-
+    https://tempmailgrab.com/.well-known/security.txt returns 200 with Contact (x2), Expires
+    (2027-08-29T00:00:00.000Z), Policy, Preferred-Languages and Canonical fields.
+- id: rfc6585-429
+  conforms: true
+  evidence: >-
+    429 Too Many Requests is declared on createInbox and documented site-wide, with a Retry-After header on
+    exhaustion and X-RateLimit-Remaining / X-RateLimit-Reset returned on every response
+    (https://tempmailgrab.com/api-docs).
+- id: rfc6797-hsts
+  conforms: true
+  evidence: >-
+    Probed 2026-09-01: Strict-Transport-Security with max-age=31536000 includeSubDomains, over TLSv1.3.
+    Recorded in security/tempmailgrab-domain-security.yml.
+- id: rfc7208-spf
+  conforms: true
+  evidence: SPF record present on tempmailgrab.com (probed 2026-09-01).
+- id: rfc7489-dmarc
+  conforms: true
+  evidence: DMARC record present with policy p=reject (probed 2026-09-01).
+- id: rfc2104-hmac
+  conforms: true
+  evidence: >-
+    Webhook deliveries are signed HMAC-SHA256 over the raw body in X-TMG-Signature; the provider publishes
+    verification code in both Node and Python and ships verification helpers in the official SDK.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: >-
+    The error envelope is a bespoke {"error": "<string>"} object served as application/json. No
+    application/problem+json media type and no type/title/status/detail members appear anywhere in the
+    contract.
+- id: rfc8594-sunset
+  conforms: false
+  evidence: No Sunset or Deprecation response header is documented or declared; see lifecycle/.
+- id: oauth2
+  conforms: false
+  evidence: >-
+    securitySchemes are http/bearer and apiKey/header only. /.well-known/oauth-authorization-server and
+    /.well-known/openid-configuration both return 404.
+- id: oidc
+  conforms: false
+  evidence: /.well-known/openid-configuration returns 404 (probed 2026-09-01).
+- id: json-api
+  conforms: false
+  evidence: Responses are plain JSON objects; no data/attributes/relationships envelope.
+- id: pagination
+  conforms: false
+  evidence: >-
+    /api-docs states explicitly that the message list endpoint has no limit or page parameter and returns
+    every message for the inbox.
+- id: idempotency
+  conforms: false
+  evidence: >-
+    No Idempotency-Key header in the contract, docs, or SDK; the official SDK documents that it deliberately
+    does not retry POST on network failure because a repeat could mint a second inbox or duplicate webhook.
+- id: dnssec
+  conforms: false
+  evidence: No DNSSEC on tempmailgrab.com (probed 2026-09-01).
+- id: caa
+  conforms: false
+  evidence: No CAA records on tempmailgrab.com (probed 2026-09-01).
+domain_standard:
+  applicable: false
+  note: >-
+    Disposable/temporary email has no industry contract standard to declare — the wire protocols underneath
+    (SMTP, MIME) are consumed by the ingestion pipeline rather than exposed as the API's own interface, and
+    there is no JMAP, IMAP, or email-testing interoperability profile served here. REWARD-ONLY dimension, so
+    nothing is invented to fill it. The nearest thing the provider does publish is an open research dataset
+    (https://tempmailgrab.com/research/disposable-email-compatibility.json) carrying a $schema and a CC BY
+    4.0 licence, which is open-data practice rather than a domain API standard.
+  probed:
+  - JMAP (RFC 8620/8621) - not offered
+  - IMAP/SMTP third-party access - not offered; addresses are receive-only
+certifications:
+  published: []
+  note: >-
+    No SOC 2, ISO 27001, PCI, HIPAA, GDPR-attestation or FedRAMP claim appears on the site. The footer's
+    "Trust Center" link resolves to https://tempmailgrab.com/privacy-explained, a plain-language privacy
+    explainer with no named certification, so no Compliance or TrustCenter pointer is emitted.

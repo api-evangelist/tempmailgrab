@@ -1,0 +1,34 @@
+generated: '2026-09-01'
+method: probed
+source: live GET of the RFC-named /.well-known/ paths on every apis.yml baseURL host and OpenAPI servers[] host
+note: >-
+  tempmailgrab.com is the only host in play — apis.yml baseURL and the OpenAPI servers[] block both name
+  https://tempmailgrab.com/api/v1. One path is genuinely served: /.well-known/security.txt returns a real
+  RFC 9116 document (Contact, Expires, Policy, Preferred-Languages, Canonical). Every other named path 404s
+  with an empty body, which is a clean negative rather than an SPA catch-all — the site returns HTML 200s
+  only for real routes. No OAuth/OIDC metadata exists because the API is API-key/bearer-token only.
+hosts:
+- host: tempmailgrab.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    file: tempmailgrab-security.txt
+    content_type: text/plain
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/mcp.json
+    status: 404

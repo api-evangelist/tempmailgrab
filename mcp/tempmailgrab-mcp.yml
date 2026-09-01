@@ -1,0 +1,82 @@
+generated: '2026-09-01'
+method: derived
+source: openapi/tempmailgrab-openapi.json
+status: candidate
+note: >-
+  TempMailGrab publishes NO MCP server. Probed 2026-09-01: https://tempmailgrab.com/mcp 404,
+  /api/mcp 404, /mcp/sse 404, /.well-known/mcp.json 404, and mcp.tempmailgrab.com does not resolve.
+  Their llms.txt — which is otherwise a complete discovery index naming the OpenAPI, the npm SDK and
+  the research datasets — names no MCP endpoint. The tools below are a DERIVED candidate mapped
+  one-for-one onto real operationIds in the published OpenAPI 3.1.2 contract; nothing here is served
+  by the provider today. No `type: MCPServer` pointer is emitted in apis.yml, because that pointer asserts
+  the PROVIDER serves an MCP surface and this one does not — same discipline as the well-known and agent-card
+  rules. Wire the pointer only if TempMailGrab ships a real server.
+deployment:
+  mode: none
+  auth: api-key
+  verified: probed
+server:
+  name: tempmailgrab
+  transport: null
+  endpoint: null
+candidate_tools:
+- name: create_inbox
+  rest: createInbox
+  description: Create a private disposable inbox, optionally with a prefix, domain, and 600-259200s TTL.
+- name: delete_inbox
+  rest: deleteInbox
+  description: Permanently delete an inbox and all of its stored mail and attachments.
+- name: list_inbox_messages
+  rest: listInboxMessages
+  description: List messages for an inbox, newest first, each with its extracted OTP.
+- name: get_inbox_message
+  rest: getInboxMessage
+  description: Fetch one full message — sanitized HTML, text body, extracted OTP and links, attachments.
+- name: clear_inbox
+  rest: deleteInboxMessages
+  description: Delete every message in an inbox while keeping the address alive.
+- name: inject_test_message
+  rest: createTestMessage
+  description: Inject a synthetic message through the parsing and realtime pipeline for testing.
+- name: list_messages
+  rest: listMessages
+  description: List messages through the flat endpoint alias.
+- name: get_message
+  rest: getMessage
+  description: Fetch one message by id through the flat alias.
+- name: create_inbox_webhook
+  rest: createInboxWebhook
+  description: Register an HMAC-signed delivery webhook scoped to one inbox.
+- name: create_webhook
+  rest: createWebhook
+  description: Register an account-level webhook that fires for every inbox on the key.
+- name: list_webhooks
+  rest: listWebhooks
+  description: List account webhooks.
+- name: delete_webhook
+  rest: deleteWebhook
+  description: Delete an account webhook.
+- name: list_custom_domains
+  rest: listCustomDomains
+  description: List BYOD custom domains registered to the API key.
+- name: create_custom_domain
+  rest: createCustomDomain
+  description: Register a custom domain and receive its required DNS records.
+- name: verify_custom_domain
+  rest: verifyCustomDomain
+  description: Verify custom-domain TXT ownership and MX routing.
+coverage:
+  openapi_operations: 15
+  candidate_tools: 15
+  uncovered_operations: 0
+probes:
+- url: https://tempmailgrab.com/mcp
+  status: 404
+- url: https://tempmailgrab.com/api/mcp
+  status: 404
+- url: https://tempmailgrab.com/mcp/sse
+  status: 404
+- url: https://tempmailgrab.com/.well-known/mcp.json
+  status: 404
+- url: https://mcp.tempmailgrab.com/mcp
+  status: <no response - DNS NXDOMAIN>

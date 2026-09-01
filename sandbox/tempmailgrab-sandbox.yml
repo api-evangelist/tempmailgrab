@@ -1,0 +1,60 @@
+generated: '2026-09-01'
+method: searched
+source: https://tempmailgrab.com/api-docs
+also:
+- https://tempmailgrab.com/email-testing-api
+- https://github.com/sathishbanoth-coder/tempmailgrab-js
+summary: >-
+  There is no separate test-mode account, no test/live key pair, and no sandbox host — every call runs
+  against production with a single tmg_live_ key class. What the provider ships instead is a first-class
+  fixture injector, which for an email-testing API is the equivalent surface: createTestMessage pushes a
+  synthetic message through the real ingestion, MIME-parsing, OTP-extraction and realtime pipeline so a
+  consumer can develop message-handling logic without waiting on outside mail.
+modes:
+  test_live_separation: false
+  key_prefixes:
+  - prefix: tmg_live_
+    mode: live
+    note: The only documented key prefix; no tmg_test_ counterpart exists.
+  sandbox_host: null
+fixtures:
+- name: Synthetic message injection
+  operation_id: createTestMessage
+  path: POST /api/v1/inbox/{id}/test-message
+  description: >-
+    "Inject a synthetic email into your inbox — useful for developing and testing your message-parsing logic
+    without waiting for a real email." It exercises the same parsing and realtime path as inbound mail.
+  effects: real (the message is stored in the inbox and fires webhooks)
+- name: Webhook payload signing
+  export: signWebhookPayload(secret, body)
+  package: tempmailgrab (npm)
+  description: >-
+    Generates a valid X-TMG-Signature for a body of your choosing, so a consumer can produce legitimate
+    deliveries against their own receiver in tests without waiting for real mail.
+- name: Interactive playground
+  url: https://tempmailgrab.com/api-docs
+  description: >-
+    "Try it — Interactive Playground. Paste your API key and run live requests against the real API."
+    Endpoint pickers for createInbox, listInboxMessages, createTestMessage and listWebhooks. It calls
+    production with your own key; it is a console, not an isolated sandbox.
+  requires_key: true
+test_isolation:
+  mechanism: inbox-per-test
+  description: >-
+    The documented testing pattern is one disposable inbox per test rather than a shared QA mailbox, so
+    parallel runners never contend for the same message. The npm package ships a Playwright fixture
+    (tempmailgrab/playwright) that hands each test its own address, and prefixes are sanitised to
+    [a-z0-9] with a random suffix appended so parallel runs cannot collide.
+  teardown: >-
+    None required — every inbox carries a TTL and is purged with its messages. deleteInbox exists for
+    explicit teardown in place of waiting out the TTL.
+test_values:
+  published: false
+  note: >-
+    No magic addresses, test cards, or reserved identifiers are published — inbox addresses are randomly
+    generated at creation. Nothing invented here.
+free_tier:
+  note: >-
+    A free developer account with an API key can be created from https://tempmailgrab.com/dashboard with no
+    credit card; the provider states it is "fully functional on the free tier with a single concurrent inbox
+    and the standard 24-hour TTL."

@@ -1,0 +1,193 @@
+generated: '2026-09-01'
+method: derived
+source: openapi/tempmailgrab-openapi.json
+enriched_from: https://tempmailgrab.com/api-docs
+note: >-
+  Derived from components.schemas and the path parameters that bind them. The contract types every
+  identifier as a bare string with no pattern, so the id prefixes below come from the worked examples on
+  /api-docs, not from the schema.
+entities:
+- name: Inbox
+  schema: components.schemas.Inbox
+  id_field: id
+  id_prefix: inb_
+  fields:
+  - name: id
+    type: string
+    required: true
+  - name: address
+    type: string
+    format: email
+    required: true
+  - name: created_at
+    type: integer
+    format: unix-seconds
+    required: true
+  - name: expires_at
+    type: integer
+    format: unix-seconds
+    required: true
+  operations:
+  - createInbox
+  - deleteInbox
+  lifecycle: >-
+    Created with a TTL of 600-259200 seconds (default 86400). Hard-deleted on expiry along with its messages
+    and attachment binaries, or immediately via deleteInbox.
+- name: MessageSummary
+  schema: components.schemas.MessageSummary
+  id_field: id
+  id_prefix: msg_
+  projection_of: MessageDetail
+  fields:
+  - name: id
+    type: string
+    required: true
+  - name: sender
+    type: string
+    required: true
+  - name: subject
+    type: [string, 'null']
+    required: true
+  - name: snippet
+    type: string
+    required: true
+  - name: extracted_otp
+    type: [string, 'null']
+    required: true
+  - name: created_at
+    type: integer
+    format: unix-seconds
+    required: true
+  operations:
+  - listInboxMessages
+  - listMessages
+- name: MessageDetail
+  schema: components.schemas.MessageDetail
+  id_field: id
+  id_prefix: msg_
+  fields:
+  - name: id
+    type: string
+    required: true
+  - name: sender
+    type: string
+    required: true
+  - name: subject
+    type: [string, 'null']
+    required: true
+  - name: text_body
+    type: [string, 'null']
+    required: true
+  - name: html_body
+    type: [string, 'null']
+    required: true
+    note: Sanitized HTML.
+  - name: extracted_otp
+    type: [string, 'null']
+    required: true
+  - name: extracted_links
+    type: array
+    items: string(uri)
+    required: true
+  - name: raw_headers
+    type: [string, 'null']
+    required: true
+  - name: timestamp
+    type: integer
+    format: unix-seconds
+    required: true
+  - name: attachments
+    type: array
+    items: Attachment
+    required: true
+  operations:
+  - getInboxMessage
+  - getMessage
+- name: Attachment
+  schema: components.schemas.MessageDetail.properties.attachments.items
+  inline: true
+  id_field: id
+  fields:
+  - name: id
+    type: string
+    required: true
+  - name: filename
+    type: [string, 'null']
+    required: true
+  - name: content_type
+    type: [string, 'null']
+    required: true
+  - name: size
+    type: integer
+    minimum: 0
+    required: true
+  - name: url
+    type: string
+    format: uri
+    required: true
+- name: WebhookMessage
+  schema: components.schemas.WebhookMessage
+  note: The message projection delivered in the messageReceived webhook body; carries inbox_address.
+  operations:
+  - messageReceivedWebhook
+- name: Webhook
+  schema: null
+  id_prefix: wh_
+  note: >-
+    Not modelled in components.schemas — the webhook create/list/delete operations return inline shapes.
+    /api-docs documents the creation response as {"id":"wh_...","secret":"whsec_..."}.
+  operations:
+  - createInboxWebhook
+  - createWebhook
+  - listWebhooks
+  - deleteWebhook
+- name: CustomDomain
+  schema: null
+  id_field: domain
+  note: >-
+    Not modelled in components.schemas; keyed by the domain name in the path
+    (POST /byod/{domain}/verify). Registration returns the required DNS records.
+  operations:
+  - listCustomDomains
+  - createCustomDomain
+  - verifyCustomDomain
+relationships:
+- from: Inbox
+  to: MessageSummary
+  type: has_many
+  via: path parameter id on /inbox/{id}/messages
+- from: Inbox
+  to: MessageDetail
+  type: has_many
+  via: path parameters id + mid on /inbox/{id}/messages/{mid}
+- from: MessageDetail
+  to: Attachment
+  type: has_many
+  via: attachments[]
+- from: MessageSummary
+  to: MessageDetail
+  type: has_one
+  via: shared id (summary is the list projection of the same message)
+- from: Inbox
+  to: Webhook
+  type: has_many
+  via: POST /inbox/{id}/webhook (inbox-scoped registration)
+- from: Account
+  to: Webhook
+  type: has_many
+  via: POST /webhooks (key-scoped registration, fires for every inbox)
+- from: Account
+  to: Inbox
+  type: has_many
+  via: API key ownership - inboxes are private to the key's account
+- from: Account
+  to: CustomDomain
+  type: has_many
+  via: GET /byod lists domains registered to this API key
+- from: WebhookMessage
+  to: Inbox
+  type: belongs_to
+  via: inbox_address
+gaps:
+- Webhook and CustomDomain have no named schema in components; their shapes exist only in prose and examples.
+- No id pattern/format is declared on any identifier field, so prefixes are not machine-checkable.

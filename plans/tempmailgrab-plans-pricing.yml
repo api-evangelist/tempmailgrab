@@ -1,0 +1,60 @@
+generated: '2026-09-01'
+method: searched
+source: https://tempmailgrab.com/premium
+plan_count: 2
+currency: USD
+billing:
+  processor: Lemon Squeezy
+  self_serve: true
+  annual_commitment: false
+  cancellation: self-serve from the Lemon Squeezy portal, any time
+  refund: >-
+    "Cancel any time from the Lemon Squeezy self-service portal — no questions asked. If you cancel within
+    the first 48 hours, email api@tempmailgrab.com for a full refund."
+plans:
+- name: Free
+  price: 0
+  currency: USD
+  period: forever
+  api_access: false
+  note: >-
+    Browser inbox only, no account required. The pricing table lists "REST API access — no" for Free, while
+    the same page's Get Started section says "The API is fully functional on the free tier with a single
+    concurrent inbox and the standard 24-hour TTL." The two statements disagree; both are recorded verbatim.
+  included:
+    browser_inbox: true
+    otp_auto_extraction: true
+    inbox_ttl: 24 hours
+    concurrent_inboxes: 1
+    api_key_management: false
+    webhook_delivery: false
+    dashboard: false
+    custom_domains: false
+    support_response: 24 hours
+  overage: null
+- name: Premium
+  price: 9
+  currency: USD
+  period: month
+  api_access: true
+  included:
+    browser_inbox: true
+    otp_auto_extraction: true
+    inbox_ttl: up to 72 hours (ttl_seconds 600-259200)
+    concurrent_inboxes: unlimited
+    api_key_management: true
+    webhook_delivery: HMAC-signed
+    dashboard: true
+    custom_domains: true (BYOD)
+    multiple_domains: planned
+    api_rate_limit: 100 requests / 10 seconds
+    support_response: 4 hours
+  overage: null
+enterprise:
+  self_serve: false
+  contact: api@tempmailgrab.com
+  note: '"For team or enterprise pricing, email api@tempmailgrab.com."'
+competitive_note: >-
+  The provider publishes its own comparison on the pricing page: "Mailinator's team plan starts at $49/month
+  (annual billing required). TempMailGrab Premium is $9/month with no annual commitment and no seat
+  minimums."

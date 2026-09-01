@@ -1,13 +1,38 @@
 name: TempMailGrab API
-description: >-
-  Privacy-first disposable/temporary email service with private 24-hour inboxes, real-time WebSocket delivery, automatic
-  OTP and verification-link extraction, attachments, webhooks, custom domains, and a versioned REST API for QA, test
-  automation, and bots.
+aid: tempmailgrab
+description: Privacy-first disposable/temporary email service with private 24-hour inboxes, real-time WebSocket delivery,
+  automatic OTP and verification-link extraction, attachments, webhooks, custom domains, and a versioned REST API for QA,
+  test automation, and bots.
+image: https://tempmailgrab.com/og.png
 url: https://raw.githubusercontent.com/api-evangelist/tempmailgrab-api/refs/heads/main/apis.yml
 created: '2026-09-01'
 modified: '2026-09-01'
 specificationVersion: '0.21'
 tags:
+- email
+- temporary-email
+- disposable-email
+- otp
+- webhooks
+- qa
+- testing
+- playwright
+- cypress
+- developer-tools
+- email-testing
+- ci
+apis:
+- name: TempMailGrab REST API
+  description: 'Versioned v1 REST API for creating private disposable inboxes, reading parsed messages with extracted OTPs
+    and verification links, managing webhooks, and registering custom domains. Machine-readable OpenAPI 3.1 contract available.
+
+
+    The declared apis.json at tempmailgrab.com/apis.json 404s, but the OpenAPI is real and served at /api/openapi.json --
+    OpenAPI 3.1.2, 15 operations, verified live. Their llms.txt names it, along with the npm SDK and a versioned, CC-licensed
+    compatibility dataset published as both JSON and CSV. Probing the conventional root paths finds none of it. Verified 2026-09-01.'
+  humanURL: https://tempmailgrab.com/api-docs
+  baseURL: https://tempmailgrab.com/api/v1
+  tags:
   - email
   - temporary-email
   - disposable-email
@@ -20,39 +45,121 @@ tags:
   - developer-tools
   - email-testing
   - ci
-apis:
-  - name: TempMailGrab REST API
-    description: >-
-      Versioned v1 REST API for creating private disposable inboxes, reading parsed messages with extracted OTPs and
-      verification links, managing webhooks, and registering custom domains. Machine-readable OpenAPI 3.1 contract
-      available.
-    humanURL: https://tempmailgrab.com/api-docs
-    baseURL: https://tempmailgrab.com/api/v1
-    tags:
-      - email
-      - temporary-email
-      - disposable-email
-      - otp
-      - webhooks
-      - qa
-      - testing
-      - playwright
-      - cypress
-      - developer-tools
-      - email-testing
-      - ci
-    properties:
-      - type: OpenAPI
-        url: https://tempmailgrab.com/api/openapi.json
-      - type: Documentation
-        url: https://tempmailgrab.com/api-docs
-      - type: LLMsTxt
-        url: https://tempmailgrab.com/llms.txt
+  properties:
+  - type: OpenAPI
+    url: openapi/tempmailgrab-openapi.json
+    description: OpenAPI 3.1.2, 15 operations, harvested verbatim 2026-09-01 from https://tempmailgrab.com/api/openapi.json.
+  - type: OpenAPI
+    url: https://tempmailgrab.com/api/openapi.json
+    description: The provider-hosted contract (200, application/json, verified 2026-09-01).
+  - type: Overlay
+    url: overlays/tempmailgrab-openapi-overlay.yaml
+    description: OpenAPI Overlay 1.0.0 of API Evangelist enrichment over the published contract.
+  - type: Documentation
+    url: https://tempmailgrab.com/api-docs
+  - type: LLMsTxt
+    url: https://tempmailgrab.com/llms.txt
+  - type: Packages
+    url: https://www.npmjs.com/package/tempmailgrab
+    description: Typed zero-dependency JavaScript SDK, published to npm.
+  - type: Documentation
+    url: https://tempmailgrab.com/email-testing-api
+    description: Email-testing API for Playwright, Cypress and CI.
+  - type: Documentation
+    url: https://tempmailgrab.com/security
+    description: Architecture, retention, HTML sanitization.
+  - type: DataSamples
+    url: https://tempmailgrab.com/research/disposable-email-compatibility.json
+    description: Published compatibility dataset (CC-licensed, versioned, with a $schema). A CSV form is served alongside
+      it.
 maintainers:
-  - FN: TempMailGrab API
-    url: https://tempmailgrab.com
+- FN: TempMailGrab API
+  email: api@tempmailgrab.com
+  url: https://tempmailgrab.com
 generated:
   by: apis.io/add
   model: claude-opus-4-8
   confidence: 95
   at: '2026-09-01T12:15:33.275Z'
+common:
+- type: DeveloperPortal
+  url: https://tempmailgrab.com/api-docs
+- type: Documentation
+  url: https://tempmailgrab.com/api-docs
+- type: APIReference
+  url: https://tempmailgrab.com/api-docs
+- type: GettingStarted
+  url: https://tempmailgrab.com/email-testing-api
+  description: The provider's step-by-step onboarding guide - create an inbox, poll or subscribe, read the extracted code.
+- type: Support
+  url: https://tempmailgrab.com/contact
+- type: Blog
+  url: https://tempmailgrab.com/blog
+- type: BlogRSS
+  url: https://tempmailgrab.com/blog/rss.xml
+- type: Pricing
+  url: https://tempmailgrab.com/premium
+- type: SignUp
+  url: https://tempmailgrab.com/dashboard
+  description: Free developer account (email/password or GitHub), then mint an API key. No credit card.
+- type: TermsOfService
+  url: https://tempmailgrab.com/terms
+- type: PrivacyPolicy
+  url: https://tempmailgrab.com/privacy
+- type: SourceCode
+  url: https://github.com/sathishbanoth-coder/tempmailgrab-js
+  description: Official JavaScript/TypeScript SDK source. Hosted on a personal GitHub account, not an organization.
+- type: StatusPage
+  url: https://tempmailgrab.com/status
+  description: Live component status backed by a five-minute synthetic ingestion probe; /health returns the machine-readable
+    form.
+- type: LLMsTxt
+  url: llms/tempmailgrab-llms.txt
+- type: WellKnown
+  url: well-known/tempmailgrab-well-known.yml
+- type: SecurityTxt
+  url: well-known/tempmailgrab-security.txt
+- type: Authentication
+  url: authentication/tempmailgrab-authentication.yml
+- type: Conventions
+  url: conventions/tempmailgrab-conventions.yml
+- type: ErrorCatalog
+  url: errors/tempmailgrab-problem-types.yml
+- type: Examples
+  url: examples/tempmailgrab-examples.yml
+- type: DataModel
+  url: data-model/tempmailgrab-data-model.yml
+- type: Lifecycle
+  url: lifecycle/tempmailgrab-lifecycle.yml
+- type: ChangeLog
+  url: changelog/tempmailgrab-changelog.yml
+- type: Conformance
+  url: conformance/tempmailgrab-conformance.yml
+- type: RateLimits
+  url: rate-limits/tempmailgrab-rate-limits.yml
+- type: Plans
+  url: plans/tempmailgrab-plans-pricing.yml
+- type: Packages
+  url: packages/tempmailgrab-packages.yml
+- type: SDKs
+  url: packages/tempmailgrab-packages.yml
+  description: One official first-party SDK - npm tempmailgrab 1.0.0, published 2026-08-31.
+- type: Sandbox
+  url: sandbox/tempmailgrab-sandbox.yml
+  description: Synthetic message injection plus an interactive playground on the docs page; no separate test-mode keys.
+- type: Webhooks
+  url: asyncapi/tempmailgrab-webhooks.yml
+  description: HMAC-signed messageReceived webhook declared in the OpenAPI 3.1 webhooks object. No AsyncAPI is published.
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Security
+  url: security/tempmailgrab-vulnerability-disclosure.yml
+- type: VulnerabilityDisclosure
+  url: security/tempmailgrab-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/tempmailgrab-domain-security.yml
+x-enrichment:
+  date: '2026-09-01'
+  status: enriched
+  artifacts_added: 26
+  pass: local-v1

@@ -1,0 +1,38 @@
+generated: '2026-09-01'
+method: generated
+source: openapi/tempmailgrab-openapi.json + https://tempmailgrab.com/api-docs
+note: >-
+  The provider publishes no skills, AGENTS.md, or agent instructions of its own — probed 2026-09-01:
+  tempmailgrab.com/AGENTS.md 404, tempmailgrab.com/skills.md 404, and the SDK repo has no AGENTS.md. These
+  are packaged by API Evangelist from the published OpenAPI 3.1.2 contract and the provider's own docs.
+  Every operationId referenced below is verified present in openapi/tempmailgrab-openapi.json.
+skills:
+- name: tempmailgrab-verify-email-otp
+  file: tempmailgrab-verify-email-otp.md
+  description: >-
+    Create a disposable inbox, hand its address to a sign-up or password-reset flow, and read back the
+    server-extracted OTP or verification link.
+  operations:
+  - createInbox
+  - listInboxMessages
+  - getInboxMessage
+  - deleteInbox
+- name: tempmailgrab-webhook-delivery
+  file: tempmailgrab-webhook-delivery.md
+  description: >-
+    Register an HMAC-signed webhook, verify deliveries against the raw bytes, and de-duplicate replays.
+  operations:
+  - createWebhook
+  - createInboxWebhook
+  - listWebhooks
+  - deleteWebhook
+  - messageReceivedWebhook
+- name: tempmailgrab-custom-domain
+  file: tempmailgrab-custom-domain.md
+  description: >-
+    Register a BYOD custom domain, apply the returned DNS records, and verify TXT ownership and MX routing.
+  operations:
+  - listCustomDomains
+  - createCustomDomain
+  - verifyCustomDomain
+  - createInbox

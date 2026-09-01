@@ -1,0 +1,94 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enrichment overlay for the TempMailGrab REST API
+  version: 1.0.0
+x-provenance:
+  generated: '2026-09-01'
+  method: generated
+  source: openapi/tempmailgrab-openapi.json
+  extends: openapi/tempmailgrab-openapi.json
+  note: >-
+    Captures only enrichment derived from the provider's own published surface — the docs, the pricing page,
+    the security page, the security.txt and the official SDK README. The original spec is never mutated.
+    Nothing here is invented: every added value has a source recorded alongside it.
+actions:
+- target: $.info
+  description: Record the provider's published contact, licence and documentation surfaces.
+  update:
+    x-documentation: https://tempmailgrab.com/api-docs
+    x-llms-txt: https://tempmailgrab.com/llms.txt
+    x-status-page: https://tempmailgrab.com/status
+    x-health-endpoint: https://tempmailgrab.com/health
+    x-security-policy: https://tempmailgrab.com/security
+    x-security-txt: https://tempmailgrab.com/.well-known/security.txt
+    x-pricing: https://tempmailgrab.com/premium
+    x-sdk-javascript: https://www.npmjs.com/package/tempmailgrab
+    x-source-code: https://github.com/sathishbanoth-coder/tempmailgrab-js
+- target: $.components.securitySchemes.bearerAuth
+  description: Document the key prefix and account scoping stated on /api-docs and /security.
+  update:
+    description: >-
+      API key as a bearer token. Keys are prefixed tmg_live_ and are account-scoped: inboxes are private to
+      the key's account and another key cannot read them. Rotate from https://tempmailgrab.com/dashboard.
+      Source - https://tempmailgrab.com/api-docs and https://tempmailgrab.com/security.
+    x-key-prefix: tmg_live_
+- target: $.components.securitySchemes.apiKey
+  description: Mark the legacy header form the docs describe as an alternative to bearer.
+  update:
+    description: >-
+      Legacy header form of the same key; both work on every request.
+      Source - https://tempmailgrab.com/api-docs.
+    x-key-prefix: tmg_live_
+- target: $.paths['/inbox'].post
+  description: Attach the published inbox-creation rate limit and the reversal path.
+  update:
+    x-rate-limit:
+      scope: per-api-key
+      limit: 2
+      window: 1s
+      source: https://tempmailgrab.com/api-docs
+    x-reversal:
+      operationId: deleteInbox
+      window: >-
+        Until expires_at. ttl_seconds is 600-259200 (default 86400), so the reversal window is the inbox
+        lifetime.
+      source: https://tempmailgrab.com/api-docs
+    x-idempotent: false
+    x-idempotency-note: >-
+      No Idempotency-Key is supported; the official SDK does not retry this call on a network failure
+      because a repeat could mint a second inbox.
+- target: $.paths['/webhooks'].post
+  description: Record the one-time secret and the missing idempotency guarantee.
+  update:
+    x-secret-returned-once: true
+    x-idempotent: false
+    x-reversal:
+      operationId: deleteWebhook
+      window: null
+      source: https://tempmailgrab.com/api-docs
+- target: $.paths['/inbox/{id}/test-message'].post
+  description: Flag the synthetic-injection fixture as the provider's test surface.
+  update:
+    x-test-fixture: true
+    x-effects: real
+    x-note: >-
+      Pushes a synthetic message through the real parsing, OTP-extraction and realtime pipeline; it is not a
+      dry run and it does fire webhooks. Source - https://tempmailgrab.com/api-docs.
+- target: $.paths['/inbox/{id}/messages'].get
+  description: Record the documented absence of pagination.
+  update:
+    x-pagination: none
+    x-ordering: newest-first
+    x-note: >-
+      "There is no limit or page parameter" - https://tempmailgrab.com/api-docs. Returns every message in
+      the inbox.
+- target: $.webhooks.messageReceived.post
+  description: Record the signing scheme and its replay limitation.
+  update:
+    x-signature:
+      header: X-TMG-Signature
+      algorithm: HMAC-SHA256 over the raw body, hex-encoded
+      verify_raw_bytes: true
+      replay_protection: >-
+        The signature does not bind a timestamp; de-duplicate on data.id. Source -
+        https://github.com/sathishbanoth-coder/tempmailgrab-js.

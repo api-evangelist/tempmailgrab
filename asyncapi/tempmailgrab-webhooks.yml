@@ -1,0 +1,95 @@
+generated: '2026-09-01'
+method: derived
+source: openapi/tempmailgrab-openapi.json (webhooks.messageReceived)
+enriched_from:
+- https://tempmailgrab.com/api-docs
+- https://github.com/sathishbanoth-coder/tempmailgrab-js
+asyncapi_published: false
+asyncapi_probe:
+- url: https://tempmailgrab.com/asyncapi.yaml
+  status: 404
+note: >-
+  TempMailGrab publishes no AsyncAPI document, but it does declare a real event surface INSIDE its OpenAPI
+  3.1.2 contract using the 3.1 top-level `webhooks` object — messageReceived, with an operationId, a
+  required X-TMG-Signature header parameter and a fully typed request body. This artifact captures that
+  webhook catalog verbatim; no AsyncAPI has been fabricated.
+transport:
+  protocol: https
+  direction: provider-to-consumer (POST to a subscriber URL)
+  content_type: application/json
+  acknowledgement: any 2xx
+  latency: 'docs: delivered "within milliseconds" of arrival'
+realtime_alternative:
+  protocol: websocket
+  note: >-
+    The browser inbox is fed by an encrypted WebSocket on the same origin (per
+    https://tempmailgrab.com/security). It is a first-party UI channel; no public WebSocket API contract,
+    endpoint, or subprotocol is documented for third-party consumers.
+subscription:
+  scopes:
+  - name: per-inbox
+    operation: createInboxWebhook
+    path: POST /api/v1/inbox/{id}/webhook
+    description: Fires only for mail arriving in one inbox.
+  - name: per-account
+    operation: createWebhook
+    path: POST /api/v1/webhooks
+    description: Fires for every inbox owned by the API key.
+  management:
+  - listWebhooks
+  - deleteWebhook
+  secret: >-
+    A whsec_-prefixed signing secret is returned once, in the creation response. It is not retrievable
+    afterwards.
+security:
+  signature_header: X-TMG-Signature
+  algorithm: HMAC-SHA256, hex-encoded, computed over the raw request body
+  verification: >-
+    Verify against the raw bytes. The SDK warns that re-serialising a parsed body does not reproduce the
+    original bytes (key order, whitespace, unicode escaping), so every legitimate delivery would fail.
+  replay_protection: >-
+    None binding a timestamp to the signature. sent_at is inside the signed body so it cannot be altered,
+    but a byte-for-byte replay stays valid indefinitely. The SDK offers an optional toleranceSeconds check
+    and the provider recommends de-duplicating on event.data.id.
+  helpers:
+  - constructWebhookEvent
+  - verifyWebhookSignature
+  - signWebhookPayload
+events:
+- name: messageReceived
+  event_type: email.received
+  operation_id: messageReceivedWebhook
+  summary: A parsed message was received.
+  payload:
+    required:
+    - event
+    - sent_at
+    - data
+    properties:
+      event:
+        type: string
+        const: email.received
+      sent_at:
+        type: integer
+        description: Unix timestamp in seconds.
+      data:
+        schema: WebhookMessage
+  data_fields:
+  - id
+  - inbox_address
+  - sender
+  - subject
+  - text_body
+  - html_body
+  - extracted_otp
+  - extracted_links
+  - timestamp
+  responses:
+    '200': Return any 2xx response to acknowledge delivery.
+delivery_guarantees:
+  retries: not documented
+  ordering: not documented
+  at_least_once: not stated
+  gap: >-
+    The provider documents how to VERIFY a delivery but not what happens when a subscriber returns a
+    non-2xx — no retry schedule, backoff, or dead-letter behaviour is published. Worth reporting.

@@ -1,0 +1,107 @@
+generated: '2026-09-01'
+method: searched
+source: https://tempmailgrab.com/api-docs
+also: https://github.com/sathishbanoth-coder/tempmailgrab-js
+note: >-
+  Request/response examples published by the provider on its own API documentation page and in the official
+  SDK README, captured verbatim. The OpenAPI contract itself carries almost no examples (one `example` key
+  across the whole document), so these live here rather than in the spec. Placeholder keys shown as
+  tmg_live_xxx are the provider's own placeholders.
+examples:
+- operation_id: createInbox
+  request:
+    method: POST
+    url: https://tempmailgrab.com/api/v1/inbox
+    headers:
+      Authorization: Bearer $TMG_API_KEY
+      Content-Type: application/json
+    body:
+      ttl_seconds: 3600
+  response:
+    status: 201
+    body:
+      id: inb_...
+      address: a1b2c3d4e5f6@tempmailgrab.com
+      expires_at: <unix seconds>
+  source: https://tempmailgrab.com/api-docs
+- operation_id: listInboxMessages
+  request:
+    method: GET
+    url: https://tempmailgrab.com/api/v1/inbox/<INBOX_ID>/messages
+    headers:
+      Authorization: Bearer $TMG_API_KEY
+  response:
+    status: 200
+    body:
+      messages:
+      - sender: '...'
+        subject: '...'
+        extracted_otp: '123456'
+  source: https://tempmailgrab.com/api-docs
+- operation_id: createWebhook
+  request:
+    method: POST
+    url: https://tempmailgrab.com/api/v1/webhooks
+    headers:
+      Authorization: Bearer $TMG_API_KEY
+      Content-Type: application/json
+    body:
+      url: https://your-app.example.com/tmg-hook
+  response:
+    status: 201
+    body:
+      id: wh_...
+      secret: whsec_...
+    note: Store the secret - it is returned only at creation.
+  source: https://tempmailgrab.com/api-docs
+- operation_id: messageReceivedWebhook
+  delivery:
+    method: POST
+    headers:
+      X-TMG-Signature: <hex HMAC-SHA256 of the raw body>
+    body:
+      event: email.received
+      sent_at: 1788157327
+      data:
+        id: msg_xyz789
+        inbox_address: ci-test@tempmailgrab.com
+        sender: noreply@example.com
+        subject: Your verification code
+        text_body: Your code is 847291
+        html_body: <p>Your code is <strong>847291</strong></p>
+        extracted_otp: '847291'
+        extracted_links: []
+        timestamp: 1788157327
+  source: https://tempmailgrab.com/api-docs
+code_samples:
+- language: curl
+  flow: create an inbox and poll for the extracted OTP
+  source: https://tempmailgrab.com/api-docs
+- language: python
+  flow: create_inbox() + wait_for_otp() with timeout and poll interval
+  source: https://tempmailgrab.com/api-docs
+- language: javascript
+  flow: fetch-based create + poll loop
+  source: https://tempmailgrab.com/api-docs
+- language: javascript
+  flow: HMAC-SHA256 webhook signature verification (node:crypto, timingSafeEqual)
+  source: https://tempmailgrab.com/api-docs
+- language: python
+  flow: HMAC-SHA256 webhook signature verification (hmac.compare_digest)
+  source: https://tempmailgrab.com/api-docs
+- language: typescript
+  flow: Playwright fixture handing every test its own inbox
+  source: https://github.com/sathishbanoth-coder/tempmailgrab-js
+- language: javascript
+  flow: Cypress custom commands for createInbox / waitForOtp
+  source: https://github.com/sathishbanoth-coder/tempmailgrab-js
+- language: typescript
+  flow: Express webhook receiver using express.raw and constructWebhookEvent
+  source: https://github.com/sathishbanoth-coder/tempmailgrab-js
+runnable_examples:
+- path: examples/wait-for-otp.mjs
+  repo: https://github.com/sathishbanoth-coder/tempmailgrab-js
+  description: Create an inbox, wait, print the OTP. Talks to the real API.
+- path: examples/webhook-receiver.mjs
+  repo: https://github.com/sathishbanoth-coder/tempmailgrab-js
+  description: Verify signed deliveries.

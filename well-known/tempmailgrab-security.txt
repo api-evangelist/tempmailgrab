@@ -1,0 +1,17 @@
+# TempMailGrab security contact — RFC 9116
+#
+# Good-faith security research is welcome and will not be met with legal
+# threats. Please allow a reasonable window to fix an issue before publishing,
+# do not access data belonging to other users while testing, and do not degrade
+# the service for anyone else.
+
+Contact: mailto:security@tempmailgrab.com
+Contact: https://tempmailgrab.com/contact
+
+# RFC 9116 requires this field. Review and extend it before the date passes —
+# an expired security.txt is treated as unmaintained.
+Expires: 2027-08-29T00:00:00.000Z
+
+Policy: https://tempmailgrab.com/security
+Preferred-Languages: en
+Canonical: https://tempmailgrab.com/.well-known/security.txt

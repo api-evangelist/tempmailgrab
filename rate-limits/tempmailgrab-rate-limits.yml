@@ -1,0 +1,64 @@
+generated: '2026-09-01'
+method: searched
+source: https://tempmailgrab.com/api-docs
+also: https://tempmailgrab.com/premium
+limit_count: 3
+headers:
+  returned:
+  - X-RateLimit-Remaining
+  - X-RateLimit-Reset
+  - Retry-After
+  exhaustion_status: 429
+  note: >-
+    The docs state that X-RateLimit-Remaining and X-RateLimit-Reset are returned on EVERY response, and that
+    a 429 carries Retry-After. These are the legacy X- forms, not the RFC 9238 RateLimit-* draft headers.
+    They could not be observed directly: every /api/v1 path returns 401 without a key, so this is recorded
+    from the docs (method: searched) rather than from a live unauthenticated response.
+limits:
+- scope: per-api-key
+  window: 1s
+  limit: 100
+  burst: null
+  applies_to: all operations
+  source: https://tempmailgrab.com/api-docs
+  note: >-
+    "/api-docs" states "Up to 100 requests per second (6,000 per 60-second window) per API key."
+- scope: per-api-key
+  window: 10s
+  limit: 100
+  burst: null
+  applies_to: all operations
+  source: https://tempmailgrab.com/premium
+  note: >-
+    The pricing page and its FAQ both say "100 requests / 10 s" and "up to 100 requests per 10-second window
+    per API key" — a factor-of-ten disagreement with /api-docs above. Both figures are recorded verbatim
+    rather than reconciled; an agent should plan against the more conservative 100/10s.
+- scope: per-api-key
+  window: 1s
+  limit: 2
+  burst: null
+  applies_to:
+  - createInbox
+  source: https://tempmailgrab.com/api-docs
+  note: '"Inbox creation has a separate limit of 2 per second."'
+- scope: per-ip
+  window: null
+  limit: null
+  applies_to: browser inbox creation (non-API)
+  source: https://tempmailgrab.com/security
+  note: >-
+    "Inbox creation is rate limited per IP" for the free browser surface; no number is published. API limits
+    are explicitly per key, not per IP, so a CI runner behind shared NAT gets its own budget.
+plan_limits:
+- plan: Free
+  concurrent_inboxes: 1
+  api_access: false
+- plan: Premium
+  concurrent_inboxes: unlimited
+  api_access: true
+retry_guidance: >-
+  "Exceeding the limit returns 429 Too Many Requests with a Retry-After header — implement exponential
+  backoff and retry." The official SDK retries 429 and 5xx on any method, honours Retry-After over its own
+  backoff, and never retries a 4xx.
+discrepancies:
+- '100 req/s (/api-docs) vs 100 req/10s (/premium) — unreconciled by the provider.'

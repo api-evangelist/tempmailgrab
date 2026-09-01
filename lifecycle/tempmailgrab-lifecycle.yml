@@ -1,0 +1,74 @@
+generated: '2026-09-01'
+method: searched
+source: https://tempmailgrab.com/api-docs
+also:
+- https://tempmailgrab.com/status
+- https://tempmailgrab.com/health
+- https://tempmailgrab.com/premium
+- https://tempmailgrab.com/security
+versioning:
+  scheme: url-path
+  current_version: v1
+  spec_version: 1.0.0
+  policy: >-
+    "The API is versioned. Breaking changes will be introduced under /api/v2 with migration documentation
+    published in advance."
+  policy_url: https://tempmailgrab.com/api-docs
+deprecation:
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  deprecated_operations: []
+  note: >-
+    No deprecation policy, no Sunset/Deprecation response headers, and no deprecated: true flag on any of
+    the 15 operations in the OpenAPI 3.1.2 contract. The versioning statement above tells a consumer what
+    happens on a BREAKING change but says nothing about how or when an existing operation would be retired,
+    so this is recorded as a versioning policy rather than a deprecation policy and no Deprecation pointer
+    is emitted.
+status_page:
+  published: true
+  url: https://tempmailgrab.com/status
+  machine_readable: https://tempmailgrab.com/health
+  http_status: 200
+  probed: '2026-09-01'
+  components:
+  - Website and API
+  - Inbound email pipeline
+  - OTP extraction
+  monitoring: >-
+    A synthetic message is pushed through storage, MIME parsing, OTP extraction and API read-back every five
+    minutes from inside the production Worker; the probe must parse and read back a known OTP to pass. The
+    page publishes the last probe timestamp and latency. /health returns
+    {"status","ingest":{"ok","path","checked_at","last_ok_at","consecutive_failures"}}.
+  history: false
+  incident_feed: false
+  discrepancy: >-
+    https://tempmailgrab.com/security tells readers "Live availability is at status.tempmailgrab.com", but
+    that hostname does not resolve (DNS NXDOMAIN, probed 2026-09-01). The working status page is the
+    first-party path https://tempmailgrab.com/status. Worth reporting to the provider.
+sla:
+  application_sla: false
+  statement: >-
+    "TempMailGrab runs on Cloudflare Workers, which has a publicly documented 99.9% uptime SLA at the
+    platform level. We do not offer a separate application-level SLA at this time."
+  source: https://tempmailgrab.com/premium
+support:
+  free_tier_response: 24 hours
+  premium_response: 4 hours
+  channel: https://tempmailgrab.com/contact
+  api_contact: api@tempmailgrab.com
+data_lifecycle:
+  note: >-
+    The resource lifecycle is a first-class part of this product, not an afterthought — inboxes are
+    time-boxed and hard-deleted rather than archived.
+  inbox_ttl_default_seconds: 86400
+  inbox_ttl_min_seconds: 600
+  inbox_ttl_max_seconds: 259200
+  purge: >-
+    A scheduled job deletes expired inboxes together with their messages and attachment binaries; the
+    security page states the design intent as "Data that no longer exists cannot be breached."
+  source: https://tempmailgrab.com/security
+api_launch:
+  v1_launched: '2025'
+  source: https://tempmailgrab.com/api-docs

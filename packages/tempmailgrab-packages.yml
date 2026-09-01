@@ -1,0 +1,63 @@
+generated: '2026-09-01'
+method: searched
+source: https://registry.npmjs.org/tempmailgrab (registry metadata) + https://tempmailgrab.com/api-docs + https://github.com/sathishbanoth-coder/tempmailgrab-js
+note: >-
+  One first-party client library exists, on npm only. Registry sweeps of PyPI, RubyGems, crates.io, NuGet,
+  Maven Central, Packagist and pkg.go.dev found no tempmailgrab package under any first-party account — the
+  provider's own docs publish Python and cURL as hand-rolled snippets rather than shipping a Python SDK.
+  Currency is strong: the sole published npm version is two days older than this enrichment pass, and the
+  GitHub source repo was pushed the same day the package was published.
+packages:
+- name: tempmailgrab
+  registry: npm
+  url: https://www.npmjs.com/package/tempmailgrab
+  official: true
+  language: javascript
+  version: 1.0.0
+  published: '2026-08-31'
+  license: MIT
+  repository: https://github.com/sathishbanoth-coder/tempmailgrab-js
+  homepage: https://tempmailgrab.com/email-testing-api
+  runtime_dependencies: 0
+  min_runtime: Node 20+
+  typed: true
+  description: >-
+    Official zero-dependency, typed JavaScript/TypeScript client. Wraps the v1 REST API and adds the waiting
+    primitives the raw API does not have — waitForOtp(), waitForLink(), waitForMessage(predicate) — plus a
+    Playwright fixture that hands every test its own inbox, HMAC-SHA256 webhook verification helpers
+    (constructWebhookEvent, verifyWebhookSignature, signWebhookPayload) and method-aware retries.
+  entry_points:
+  - tempmailgrab
+  - tempmailgrab/playwright
+  official_evidence: >-
+    package.json homepage is https://tempmailgrab.com/email-testing-api, the provider's own /api-docs page
+    calls it "the official zero-dependency SDK", and llms.txt lists it as the JavaScript SDK.
+absent_registries:
+- registry: pypi
+  checked: '2026-09-01'
+  result: no first-party package; docs publish raw `requests` snippets instead
+- registry: rubygems
+  checked: '2026-09-01'
+  result: none
+- registry: crates.io
+  checked: '2026-09-01'
+  result: none
+- registry: nuget
+  checked: '2026-09-01'
+  result: none
+- registry: maven-central
+  checked: '2026-09-01'
+  result: none
+- registry: pkg.go.dev
+  checked: '2026-09-01'
+  result: none
+distribution_channels:
+  note: >-
+    Not client libraries — end-user applications, recorded here so they are not mistaken for SDKs.
+  channels:
+  - name: Chrome extension
+    url: https://chromewebstore.google.com/detail/tempmailgrab/eodmeimkdmdhmebkdkmlnkhgolijcefh
+  - name: Firefox add-on
+    url: https://addons.mozilla.org/en-US/firefox/addon/tempmailgrab/
+  - name: Android app
+    url: https://play.google.com/store/apps/details?id=com.tempmailgrab.app

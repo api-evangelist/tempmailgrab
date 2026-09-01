@@ -1,0 +1,105 @@
+generated: '2026-09-01'
+method: derived
+source: openapi/tempmailgrab-openapi.json
+enriched_from: https://tempmailgrab.com/api-docs
+format: custom-json
+rfc9457: false
+envelope:
+  media_type: application/json
+  schema: '{"error": "<human-readable string>"}'
+  required:
+  - error
+  note: >-
+    The contract defines a single Error schema with one required string field. There is no machine-readable
+    error code, no type URI, and no application/problem+json media type — an agent must branch on the HTTP
+    status, not on a stable code. The official SDK models this by exposing typed ApiError.isRateLimited /
+    ApiError.isAuthError booleans derived from the status rather than from the body.
+statuses:
+- status: 400
+  title: Bad Request
+  operations:
+  - createInbox
+  meaning: Invalid prefix, domain, or TTL (ttl_seconds outside 600-259200).
+  remediation: Correct the request body; do not retry unchanged.
+  retryable: false
+- status: 401
+  title: Unauthorized
+  operations:
+  - listInboxMessages
+  - deleteInboxMessages
+  - createInboxWebhook
+  - listWebhooks
+  - createWebhook
+  - deleteWebhook
+  - listCustomDomains
+  meaning: Missing or invalid API key.
+  remediation: >-
+    Send Authorization: Bearer <key> or X-API-Key: <key>. Rotate the key from the dashboard if it may be
+    compromised.
+  retryable: false
+  docs: https://tempmailgrab.com/api-docs
+- status: 404
+  title: Not Found
+  operations:
+  - deleteInbox
+  - getInboxMessage
+  - createTestMessage
+  - listMessages
+  - getMessage
+  - verifyCustomDomain
+  meaning: Inbox or message ID does not exist, or the inbox has expired and been purged.
+  remediation: >-
+    Treat as terminal. Expiry is indistinguishable from a bad id here, so an agent should track expires_at
+    rather than probing.
+  retryable: false
+- status: 409
+  title: Conflict
+  operations:
+  - createCustomDomain
+  meaning: The custom domain is already registered.
+  remediation: Call listCustomDomains before registering; the existing registration is authoritative.
+  retryable: false
+- status: 429
+  title: Too Many Requests
+  operations:
+  - createInbox
+  meaning: Rate limit exceeded for the API key.
+  remediation: >-
+    Honour the Retry-After header and back off exponentially. X-RateLimit-Remaining and X-RateLimit-Reset
+    are returned on every response.
+  retryable: true
+  docs: https://tempmailgrab.com/api-docs
+- status: 500
+  title: Internal Server Error
+  operations: []
+  meaning: Transient server error.
+  remediation: Retry with exponential backoff.
+  retryable: true
+  note: >-
+    Documented on /api-docs under "Error responses" but not declared as a response in the OpenAPI contract
+    for any operation — a spec/docs gap worth reporting to the provider.
+sdk_error_types:
+  source: https://github.com/sathishbanoth-coder/tempmailgrab-js
+  types:
+  - name: ApiError
+    fields:
+    - isRateLimited
+    - isAuthError
+  - name: TimeoutError
+    fields:
+    - waitedMs
+    - messagesSeen
+    note: >-
+      messagesSeen disambiguates "nothing arrived" (0) from "mail arrived but nothing matched" (>0) without
+      a second run.
+  - name: WebhookVerificationError
+    codes:
+    - missing_signature
+    - malformed_signature
+    - signature_mismatch
+    - invalid_json
+    - timestamp_out_of_tolerance
+gaps:
+- No stable machine-readable error code in the response body.
+- 500 is documented in prose but absent from every operation's responses[] in the spec.
+- 429 is declared only on createInbox although the rate limit is per key across all operations.

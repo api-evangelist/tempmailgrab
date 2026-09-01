@@ -1,0 +1,166 @@
+generated: '2026-09-01'
+method: searched
+source: https://tempmailgrab.com/api-docs
+derived_from:
+- openapi/tempmailgrab-openapi.json
+- https://github.com/sathishbanoth-coder/tempmailgrab-js (README, official SDK)
+- https://tempmailgrab.com/premium
+base_url: https://tempmailgrab.com/api/v1
+authentication:
+  style: bearer-token-or-api-key-header
+  headers:
+  - 'Authorization: Bearer <key>'
+  - 'X-API-Key: <key>'
+  key_prefix: tmg_live_
+  scope: >-
+    Keys are account-scoped. Inboxes are private to the key's account; another key cannot read your mail.
+  rotation: self-serve from https://tempmailgrab.com/dashboard
+  docs: https://tempmailgrab.com/api-docs
+idempotency:
+  supported: false
+  header: null
+  evidence: >-
+    No Idempotency-Key header appears in the OpenAPI 3.1.2 contract, on the /api-docs page, or in the
+    official SDK. The SDK README states the consequence plainly: on a network error or timeout it retries
+    only GET and DELETE, because "repeating a POST there could mint a second inbox, or register a duplicate
+    webhook that then fires twice for every message", so createInbox() and webhook creation get exactly one
+    attempt. That is a documented ABSENCE of idempotency, not a documented idempotency mechanism.
+  agent_impact: >-
+    An agent that times out on POST /inbox or POST /webhooks cannot safely retry and must reconcile by
+    listing (GET /webhooks) before creating again.
+pagination:
+  supported: false
+  evidence: >-
+    /api-docs states verbatim that GET /api/v1/inbox/:id/messages "returns all messages for the inbox
+    (newest first). There is no limit or page parameter — typical inboxes stay small; for high-volume
+    tests, poll and process incrementally."
+  ordering: newest-first by created_at
+field_expansion:
+  supported: false
+  note: >-
+    Two fixed projections instead of sparse fieldsets — MessageSummary on the list endpoints (snippet plus
+    extracted_otp) and MessageDetail on the single-message endpoints (text_body, sanitized html_body,
+    extracted_links, raw_headers, attachments).
+metadata:
+  supported: false
+request_id_tracing:
+  supported: false
+  evidence: No request-id or correlation header is documented in the spec or on /api-docs.
+versioning:
+  style: url-path
+  current: v1
+  policy: >-
+    "The API is versioned. Breaking changes will be introduced under /api/v2 with migration documentation
+    published in advance." (https://tempmailgrab.com/api-docs)
+  sunset_headers: false
+error_envelope:
+  shape: '{"error": "<string>"}'
+  media_type: application/json
+  rfc9457: false
+  schema: components.schemas.Error
+  see: errors/tempmailgrab-problem-types.yml
+rate_limit_signaling:
+  headers:
+  - X-RateLimit-Remaining
+  - X-RateLimit-Reset
+  - Retry-After
+  exhaustion_status: 429
+  see: rate-limits/tempmailgrab-rate-limits.yml
+webhook_conventions:
+  signature_header: X-TMG-Signature
+  algorithm: HMAC-SHA256 over the raw request body, hex-encoded
+  secret_delivery: returned once, at webhook creation
+  replay_protection: >-
+    The signature covers the body only and does not bind a separate timestamp, so a byte-for-byte replay
+    stays valid indefinitely. sent_at sits inside the signed body and cannot be altered; the SDK's optional
+    toleranceSeconds narrows the window, and the provider recommends recording event.data.id and skipping
+    ids already processed as the real de-duplication.
+  acknowledgement: any 2xx
+  see: asyncapi/tempmailgrab-webhooks.yml
+data_conventions:
+  timestamps: Unix epoch seconds (integers), on created_at, expires_at, timestamp and sent_at
+  id_prefixes:
+  - prefix: inb_
+    entity: Inbox
+  - prefix: msg_
+    entity: Message
+  - prefix: wh_
+    entity: Webhook
+  - prefix: whsec_
+    entity: Webhook signing secret
+  - prefix: tmg_live_
+    entity: API key
+  id_prefix_source: >-
+    Read from the worked examples on https://tempmailgrab.com/api-docs; the OpenAPI schemas type these
+    fields as bare strings without a pattern.
+dry_run_mode:
+  supported: partial
+  mechanism: >-
+    POST /inbox/{id}/test-message (operationId createTestMessage) injects a synthetic message through the
+    real parsing, OTP-extraction and realtime pipeline, so integration logic can be exercised end to end
+    without waiting for outside mail. It is a live-effect test injector rather than a no-op rehearsal of an
+    arbitrary call: there is no dry-run flag on inbox, webhook or custom-domain creation.
+  see: sandbox/tempmailgrab-sandbox.yml
+reversibility:
+  grade: documented
+  read_only: false
+  note: >-
+    Every create in this API has a matching delete published as a real operationId, so an agent can undo the
+    resources it provisions. The window is stated only for inboxes; nothing in the docs states a window for
+    webhook or custom-domain reversal, and the two delete operations are themselves irreversible by design.
+    No window is asserted here that the provider does not state.
+  surfaces:
+  - write_operation: createInbox
+    reversal_operation: deleteInbox
+    reversal: Permanently delete the inbox and all of its stored mail and attachments.
+    window: >-
+      Until the inbox expires. ttl_seconds is 600-259200 (10 minutes to 72 hours), default 86400 (24 hours);
+      after expiry a scheduled job deletes the inbox, its messages and its attachment binaries.
+    window_source: https://tempmailgrab.com/api-docs
+    grade: verified
+  - write_operation: createInboxWebhook
+    reversal_operation: deleteWebhook
+    reversal: Delete the webhook registration so deliveries stop.
+    window: null
+    window_source: null
+    grade: documented
+    note: Docs publish the delete path but state no time bound on it.
+  - write_operation: createWebhook
+    reversal_operation: deleteWebhook
+    reversal: Delete the account-level webhook.
+    window: null
+    window_source: null
+    grade: documented
+  - write_operation: createCustomDomain
+    reversal_operation: null
+    reversal: null
+    window: null
+    grade: none
+    note: >-
+      GET /byod lists registered domains and POST /byod/{domain}/verify re-checks DNS, but the contract
+      publishes no delete/deregister operation for a BYOD domain and the docs describe none.
+  - write_operation: deleteInbox
+    reversal_operation: null
+    reversal: null
+    window: null
+    grade: none
+    note: 'Irreversible by design: /api-docs says "Permanently delete an inbox and all stored mail."'
+  - write_operation: deleteInboxMessages
+    reversal_operation: null
+    reversal: null
+    window: null
+    grade: none
+    note: Purges every message while keeping the address; no restore path is published.
+  - write_operation: createTestMessage
+    reversal_operation: deleteInboxMessages
+    reversal: Purge the injected synthetic message along with the rest of the inbox.
+    window: >-
+      Until the inbox expires (same TTL bound as the inbox itself).
+    window_source: https://tempmailgrab.com/api-docs
+    grade: verified
+cross_links:
+  errors: errors/tempmailgrab-problem-types.yml
+  lifecycle: lifecycle/tempmailgrab-lifecycle.yml
+  authentication: authentication/tempmailgrab-authentication.yml
+  rate_limits: rate-limits/tempmailgrab-rate-limits.yml
+  sandbox: sandbox/tempmailgrab-sandbox.yml

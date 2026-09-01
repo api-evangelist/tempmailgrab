@@ -1,0 +1,49 @@
+generated: '2026-09-01'
+method: searched
+source: https://tempmailgrab.com/api-docs
+scheme: url-path-versioning
+current_version: v1
+spec_version: 1.0.0
+dated_changelog: false
+note: >-
+  The provider publishes an "API Changelog" section on /api-docs, but it is a version-level statement plus
+  the v1 operation inventory rather than a dated entry stream — there are no per-release dates, no RSS/JSON
+  feed, and /changelog 404s. The only dated release signal available is the npm package's own publish
+  timestamp. Both are recorded; nothing has been dated that the provider did not date.
+entries:
+- version: v1
+  date: null
+  released: '2025'
+  status: current
+  breaking: false
+  highlights:
+  - POST /api/v1/inbox - Create disposable inbox
+  - GET /api/v1/inbox/:id/messages - List messages with extracted OTP
+  - GET /api/v1/inbox/:id/messages/:mid - Single message details
+  - DELETE /api/v1/inbox/:id - Delete an inbox and its stored mail
+  - DELETE /api/v1/inbox/:id/messages - Purge mail while keeping the address
+  - POST /api/v1/inbox/:id/test-message - Inject a synthetic delivery test
+  - POST /api/v1/webhooks - Account-level webhook registration
+  - GET /api/v1/webhooks - List webhooks
+  - DELETE /api/v1/webhooks/:id - Delete webhook
+  - POST /api/v1/byod - Register a custom domain
+  - POST /api/v1/byod/:domain/verify - Verify custom-domain DNS
+  - GET /api/v1/byod - List custom domains
+  source: https://tempmailgrab.com/api-docs
+forward_policy: >-
+  "The API is versioned. Breaking changes will be introduced under /api/v2 with migration documentation
+  published in advance."
+sdk_releases:
+- package: tempmailgrab
+  registry: npm
+  version: 1.0.0
+  published: '2026-08-31'
+  source: https://registry.npmjs.org/tempmailgrab
+other_feeds:
+- type: Blog RSS
+  url: https://tempmailgrab.com/blog/rss.xml
+  status: 200
+  note: Product/editorial feed, not an API changelog.
+probes:
+- url: https://tempmailgrab.com/changelog
+  status: 404

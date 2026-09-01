@@ -1,0 +1,81 @@
+generated: '2026-09-01'
+method: searched
+source: https://tempmailgrab.com/api-docs
+derived_from: openapi/tempmailgrab-openapi.json
+also: https://tempmailgrab.com/security
+docs: https://tempmailgrab.com/api-docs
+summary:
+  types:
+  - apiKey
+  - http
+  api_key_in:
+  - header
+  oauth2: false
+  openid_connect: false
+  mutual_tls: false
+  applied: >-
+    Both schemes are applied at the document level as alternatives - security is
+    [{bearerAuth: []}, {apiKey: []}] - so every one of the 15 operations requires a key and either header
+    form is accepted.
+schemes:
+- name: bearerAuth
+  type: http
+  scheme: bearer
+  header: 'Authorization: Bearer tmg_live_xxx'
+  key_prefix: tmg_live_
+  preferred: true
+  sources:
+  - openapi/tempmailgrab-openapi.json
+  - https://tempmailgrab.com/api-docs
+- name: apiKey
+  type: apiKey
+  in: header
+  parameter: X-API-Key
+  header: 'X-API-Key: tmg_live_xxx'
+  key_prefix: tmg_live_
+  legacy: true
+  note: '/api-docs calls this "the legacy header" and states both work on every request.'
+  sources:
+  - openapi/tempmailgrab-openapi.json
+  - https://tempmailgrab.com/api-docs
+key_management:
+  issuance: >-
+    Create a free account on the developer dashboard (email/password or GitHub sign-in), then mint an API
+    key. Every key is tied to the account, so keys and the dashboard share the same private inboxes.
+  dashboard: https://tempmailgrab.com/dashboard
+  sign_in_methods:
+  - email/password
+  - GitHub
+  rotation: >-
+    Keys can be rotated from the dashboard. The provider advises rotating immediately on suspected exposure
+    rather than waiting to confirm misuse.
+  scoping: >-
+    Account-scoped bearer credential - anyone holding it can act as the account. There are no scopes,
+    no per-key permissions, and no read-only key class.
+  storage_guidance: >-
+    "Keep it in an environment variable or your CI provider's secret store, never in committed source, and
+    never in client-side code where a browser would expose it." (https://tempmailgrab.com/security)
+  transport: TLS only.
+authorization:
+  model: ownership
+  description: >-
+    Inboxes are private to the key's account; another key cannot read your mail. There is no scope, role, or
+    consent surface - authorization is entirely "did this key create this resource".
+  scopes_published: false
+rate_limit_binding: >-
+  Limits are enforced per API key rather than per IP, so a CI runner behind shared NAT gets its own budget.
+  See rate-limits/tempmailgrab-rate-limits.yml.
+webhook_authentication:
+  outbound: HMAC-SHA256 over the raw body in X-TMG-Signature, keyed by a whsec_ secret returned once at
+    webhook creation.
+  see: asyncapi/tempmailgrab-webhooks.yml
+negative_probes:
+- url: https://tempmailgrab.com/.well-known/openid-configuration
+  status: 404
+- url: https://tempmailgrab.com/.well-known/oauth-authorization-server
+  status: 404
+- url: https://tempmailgrab.com/.well-known/oauth-protected-resource
+  status: 404
+- url: https://tempmailgrab.com/api/v1/openapi.json
+  status: 401
+  note: Confirms every /api/v1 path is gated - an unauthenticated call returns 401, not a public error page.
