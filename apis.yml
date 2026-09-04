@@ -3,6 +3,22 @@ aid: tempmailgrab
 description: Privacy-first disposable/temporary email service with private 24-hour inboxes, real-time WebSocket delivery,
   automatic OTP and verification-link extraction, attachments, webhooks, custom domains, and a versioned REST API for QA,
   test automation, and bots.
+accessModel:
+  pricing: freemium
+  onboarding: self-serve
+  trial: false
+  try_now: true
+  public: false
+  label: Freemium · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  - rate-limits
+  - security
+  - sandbox
+  generated: '2026-09-03'
+  method: derived
 image: https://tempmailgrab.com/og.png
 url: https://raw.githubusercontent.com/api-evangelist/tempmailgrab-api/refs/heads/main/apis.yml
 created: '2026-09-01'
