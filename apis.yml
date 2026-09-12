@@ -98,6 +98,8 @@ generated:
   confidence: 95
   at: '2026-09-01T12:15:33.275Z'
 common:
+- type: Website
+  url: https://www.tempmailgrab.com/
 - type: DeveloperPortal
   url: https://tempmailgrab.com/api-docs
 - type: Documentation
