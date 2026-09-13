@@ -14,8 +14,15 @@
       "title": "",
       "saved": 0,
       "method": "discovered"
+    },
+    {
+      "source": "https://tempmailgrab.com/blog/rss.xml",
+      "feed_url": "https://tempmailgrab.com/blog/rss.xml",
+      "title": "",
+      "saved": 0,
+      "method": "feed"
     }
   ],
-  "post_count": 0,
-  "fetched": "2026-09-06T19:17:18Z"
+  "post_count": 31,
+  "fetched": "2026-09-13T13:00:00Z"
 }
