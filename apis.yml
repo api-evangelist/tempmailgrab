@@ -25,6 +25,19 @@ created: '2026-09-01'
 modified: '2026-09-01'
 specificationVersion: '0.21'
 tags:
+- Email
+- temporary-email
+- Disposable Email
+- OTP
+- Webhook
+- QA
+- Testing
+- Playwright
+- Cypress
+- Developer Tools
+- Email Testing
+- CI
+tags_raw:
 - email
 - temporary-email
 - disposable-email
@@ -38,56 +51,116 @@ tags:
 - email-testing
 - ci
 apis:
-- name: TempMailGrab REST API
-  description: 'Versioned v1 REST API for creating private disposable inboxes, reading parsed messages with extracted OTPs
-    and verification links, managing webhooks, and registering custom domains. Machine-readable OpenAPI 3.1 contract available.
-
-
-    The declared apis.json at tempmailgrab.com/apis.json 404s, but the OpenAPI is real and served at /api/openapi.json --
-    OpenAPI 3.1.2, 15 operations, verified live. Their llms.txt names it, along with the npm SDK and a versioned, CC-licensed
-    compatibility dataset published as both JSON and CSV. Probing the conventional root paths finds none of it. Verified 2026-09-01.'
+- aid: tempmailgrab:tempmailgrab-byod-api
+  name: TempMailGrab API Byod API
+  description: The Byod API from TempMailGrab API — 2 operation(s) for byod.
   humanURL: https://tempmailgrab.com/api-docs
   baseURL: https://tempmailgrab.com/api/v1
   tags:
-  - email
-  - temporary-email
-  - disposable-email
-  - otp
-  - webhooks
-  - qa
-  - testing
-  - playwright
-  - cypress
-  - developer-tools
-  - email-testing
-  - ci
+  - Byod
   properties:
   - type: OpenAPI
-    url: openapi/tempmailgrab-openapi.json
-    description: OpenAPI 3.1.2, 15 operations, harvested verbatim 2026-09-01 from https://tempmailgrab.com/api/openapi.json.
-  - type: OpenAPI
-    url: https://tempmailgrab.com/api/openapi.json
-    description: The provider-hosted contract (200, application/json, verified 2026-09-01).
-  - type: Overlay
-    url: overlays/tempmailgrab-openapi-overlay.yaml
-    description: OpenAPI Overlay 1.0.0 of API Evangelist enrichment over the published contract.
+    url: openapi/tempmailgrab-byod-api-openapi.yml
   - type: Documentation
     url: https://tempmailgrab.com/api-docs
   - type: LLMsTxt
     url: https://tempmailgrab.com/llms.txt
   - type: Packages
     url: https://www.npmjs.com/package/tempmailgrab
-    description: Typed zero-dependency JavaScript SDK, published to npm.
   - type: Documentation
     url: https://tempmailgrab.com/email-testing-api
-    description: Email-testing API for Playwright, Cypress and CI.
   - type: Documentation
     url: https://tempmailgrab.com/security
-    description: Architecture, retention, HTML sanitization.
   - type: DataSamples
     url: https://tempmailgrab.com/research/disposable-email-compatibility.json
-    description: Published compatibility dataset (CC-licensed, versioned, with a $schema). A CSV form is served alongside
-      it.
+- aid: tempmailgrab:tempmailgrab-inbox-api
+  name: TempMailGrab API Inbox API
+  description: The Inbox API from TempMailGrab API — 6 operation(s) for inbox.
+  humanURL: https://tempmailgrab.com/api-docs
+  baseURL: https://tempmailgrab.com/api/v1
+  tags:
+  - Inbox
+  properties:
+  - type: OpenAPI
+    url: openapi/tempmailgrab-inbox-api-openapi.yml
+  - type: Documentation
+    url: https://tempmailgrab.com/api-docs
+  - type: LLMsTxt
+    url: https://tempmailgrab.com/llms.txt
+  - type: Packages
+    url: https://www.npmjs.com/package/tempmailgrab
+  - type: Documentation
+    url: https://tempmailgrab.com/email-testing-api
+  - type: Documentation
+    url: https://tempmailgrab.com/security
+  - type: DataSamples
+    url: https://tempmailgrab.com/research/disposable-email-compatibility.json
+- aid: tempmailgrab:tempmailgrab-messages-api
+  name: TempMailGrab API Messages API
+  description: The Messages API from TempMailGrab API — 2 operation(s) for messages.
+  humanURL: https://tempmailgrab.com/api-docs
+  baseURL: https://tempmailgrab.com/api/v1
+  tags:
+  - Messages
+  properties:
+  - type: OpenAPI
+    url: openapi/tempmailgrab-messages-api-openapi.yml
+  - type: Documentation
+    url: https://tempmailgrab.com/api-docs
+  - type: LLMsTxt
+    url: https://tempmailgrab.com/llms.txt
+  - type: Packages
+    url: https://www.npmjs.com/package/tempmailgrab
+  - type: Documentation
+    url: https://tempmailgrab.com/email-testing-api
+  - type: Documentation
+    url: https://tempmailgrab.com/security
+  - type: DataSamples
+    url: https://tempmailgrab.com/research/disposable-email-compatibility.json
+- aid: tempmailgrab:tempmailgrab-tempmailgrab-api-api
+  name: TempMailGrab API TempMailGrab API
+  description: The TempMailGrab API API from TempMailGrab API — 0 operation(s) for tempmailgrab api.
+  humanURL: https://tempmailgrab.com/api-docs
+  baseURL: https://tempmailgrab.com/api/v1
+  tags:
+  - TempMailGrab API
+  properties:
+  - type: OpenAPI
+    url: openapi/tempmailgrab-tempmailgrab-api-api-openapi.yml
+  - type: Documentation
+    url: https://tempmailgrab.com/api-docs
+  - type: LLMsTxt
+    url: https://tempmailgrab.com/llms.txt
+  - type: Packages
+    url: https://www.npmjs.com/package/tempmailgrab
+  - type: Documentation
+    url: https://tempmailgrab.com/email-testing-api
+  - type: Documentation
+    url: https://tempmailgrab.com/security
+  - type: DataSamples
+    url: https://tempmailgrab.com/research/disposable-email-compatibility.json
+- aid: tempmailgrab:tempmailgrab-webhooks-api
+  name: TempMailGrab API Webhooks API
+  description: The Webhooks API from TempMailGrab API — 2 operation(s) for webhooks.
+  humanURL: https://tempmailgrab.com/api-docs
+  baseURL: https://tempmailgrab.com/api/v1
+  tags:
+  - Webhooks
+  properties:
+  - type: OpenAPI
+    url: openapi/tempmailgrab-webhooks-api-openapi.yml
+  - type: Documentation
+    url: https://tempmailgrab.com/api-docs
+  - type: LLMsTxt
+    url: https://tempmailgrab.com/llms.txt
+  - type: Packages
+    url: https://www.npmjs.com/package/tempmailgrab
+  - type: Documentation
+    url: https://tempmailgrab.com/email-testing-api
+  - type: Documentation
+    url: https://tempmailgrab.com/security
+  - type: DataSamples
+    url: https://tempmailgrab.com/research/disposable-email-compatibility.json
 maintainers:
 - FN: TempMailGrab API
   email: api@tempmailgrab.com
@@ -98,6 +171,8 @@ generated:
   confidence: 95
   at: '2026-09-01T12:15:33.275Z'
 common:
+- type: Overlay
+  url: overlays/tempmailgrab-openapi-overlay.yaml
 - type: Website
   url: https://www.tempmailgrab.com/
 - type: DeveloperPortal
