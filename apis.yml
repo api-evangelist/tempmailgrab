@@ -57,6 +57,8 @@ apis:
   humanURL: https://tempmailgrab.com/api-docs
   baseURL: https://tempmailgrab.com/api/v1
   tags:
+  - BYOD
+  tags_raw:
   - Byod
   properties:
   - type: OpenAPI
@@ -101,6 +103,8 @@ apis:
   humanURL: https://tempmailgrab.com/api-docs
   baseURL: https://tempmailgrab.com/api/v1
   tags:
+  - Message
+  tags_raw:
   - Messages
   properties:
   - type: OpenAPI
@@ -145,6 +149,8 @@ apis:
   humanURL: https://tempmailgrab.com/api-docs
   baseURL: https://tempmailgrab.com/api/v1
   tags:
+  - Webhook
+  tags_raw:
   - Webhooks
   properties:
   - type: OpenAPI
