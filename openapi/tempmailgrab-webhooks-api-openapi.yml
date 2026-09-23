@@ -1,0 +1,95 @@
+openapi: 3.2.0
+info:
+  title: TempMailGrab Webhooks API
+  version: 1.0.0
+  description: Create disposable email inboxes and read mail programmatically. OTP codes and verification links are auto-extracted from every message. Install the official JavaScript and TypeScript SDK for typed clients and test-runner helpers.
+  contact:
+    email: api@tempmailgrab.com
+  license:
+    name: Proprietary
+    url: https://tempmailgrab.com/terms
+servers:
+- url: https://tempmailgrab.com/api/v1
+security:
+- bearerAuth: []
+- apiKey: []
+tags:
+- name: Webhooks
+paths:
+  /webhooks:
+    get:
+      operationId: listWebhooks
+      summary: List account webhooks
+      responses:
+        '200':
+          description: Webhook list
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+      tags:
+      - Webhooks
+    post:
+      operationId: createWebhook
+      summary: Register an account webhook (fires for every inbox)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - url
+              properties:
+                url:
+                  type: string
+                  format: uri
+      responses:
+        '201':
+          description: Webhook registered with HMAC secret
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+      tags:
+      - Webhooks
+  /webhooks/{id}:
+    delete:
+      operationId: deleteWebhook
+      summary: Delete an account webhook
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Deletion result
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+      tags:
+      - Webhooks
+components:
+  schemas:
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+  responses:
+    AuthenticationError:
+      description: Missing or invalid API credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+externalDocs:
+  description: Developer API guide, examples, webhooks, and SDK documentation
+  url: https://tempmailgrab.com/api-docs

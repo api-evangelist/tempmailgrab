@@ -1,0 +1,328 @@
+openapi: 3.2.0
+info:
+  title: TempMailGrab Inbox API
+  version: 1.0.0
+  description: Create disposable email inboxes and read mail programmatically. OTP codes and verification links are auto-extracted from every message. Install the official JavaScript and TypeScript SDK for typed clients and test-runner helpers.
+  contact:
+    email: api@tempmailgrab.com
+  license:
+    name: Proprietary
+    url: https://tempmailgrab.com/terms
+servers:
+- url: https://tempmailgrab.com/api/v1
+security:
+- bearerAuth: []
+- apiKey: []
+tags:
+- name: Inbox
+paths:
+  /inbox:
+    post:
+      operationId: createInbox
+      summary: Create a disposable inbox
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                prefix:
+                  type: string
+                domain:
+                  type: string
+                ttl_seconds:
+                  type: integer
+                  minimum: 600
+                  default: 86400
+                  maximum: 259200
+      responses:
+        '201':
+          description: Created inbox
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Inbox'
+        '400':
+          description: Invalid prefix, domain, or TTL
+        '429':
+          description: Rate limited
+      tags:
+      - Inbox
+  /inbox/{id}:
+    delete:
+      operationId: deleteInbox
+      summary: Delete an inbox and all of its mail
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Deleted
+        '404':
+          description: Not found or expired
+      tags:
+      - Inbox
+  /inbox/{id}/messages:
+    get:
+      operationId: listInboxMessages
+      summary: List messages (newest first)
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Message list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  messages:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MessageSummary'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+      tags:
+      - Inbox
+    delete:
+      operationId: deleteInboxMessages
+      summary: Delete every message in an inbox, keeping the address
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Deleted count
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+      tags:
+      - Inbox
+  /inbox/{id}/messages/{mid}:
+    get:
+      operationId: getInboxMessage
+      summary: Fetch one full message
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: mid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Full message with HTML body, OTP, links, and attachments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageDetail'
+        '404':
+          description: Message not found
+      tags:
+      - Inbox
+  /inbox/{id}/test-message:
+    post:
+      operationId: createTestMessage
+      summary: Inject a synthetic message through the parsing and realtime pipeline
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sender:
+                  type: string
+                subject:
+                  type: string
+                text:
+                  type: string
+      responses:
+        '200':
+          description: Synthetic message created
+        '404':
+          description: Inbox not found or expired
+      tags:
+      - Inbox
+  /inbox/{id}/webhook:
+    post:
+      operationId: createInboxWebhook
+      summary: Register a delivery webhook for one inbox
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Webhook registered with its signing secret
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+      tags:
+      - Inbox
+components:
+  schemas:
+    MessageSummary:
+      type: object
+      required:
+      - id
+      - sender
+      - subject
+      - snippet
+      - extracted_otp
+      - created_at
+      properties:
+        id:
+          type: string
+        sender:
+          type: string
+        subject:
+          type:
+          - string
+          - 'null'
+        snippet:
+          type: string
+        extracted_otp:
+          type:
+          - string
+          - 'null'
+        created_at:
+          type: integer
+          description: Unix timestamp in seconds.
+    Inbox:
+      type: object
+      required:
+      - id
+      - address
+      - created_at
+      - expires_at
+      properties:
+        id:
+          type: string
+        address:
+          type: string
+          format: email
+        created_at:
+          type: integer
+          description: Unix timestamp in seconds.
+        expires_at:
+          type: integer
+          description: Unix timestamp in seconds.
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+    MessageDetail:
+      type: object
+      required:
+      - id
+      - sender
+      - subject
+      - text_body
+      - html_body
+      - extracted_otp
+      - extracted_links
+      - raw_headers
+      - timestamp
+      - attachments
+      properties:
+        id:
+          type: string
+        sender:
+          type: string
+        subject:
+          type:
+          - string
+          - 'null'
+        text_body:
+          type:
+          - string
+          - 'null'
+        html_body:
+          type:
+          - string
+          - 'null'
+          description: Sanitized HTML.
+        extracted_otp:
+          type:
+          - string
+          - 'null'
+        extracted_links:
+          type: array
+          items:
+            type: string
+            format: uri
+        raw_headers:
+          type:
+          - string
+          - 'null'
+        timestamp:
+          type: integer
+          description: Unix timestamp in seconds.
+        attachments:
+          type: array
+          items:
+            type: object
+            required:
+            - id
+            - filename
+            - content_type
+            - size
+            - url
+            properties:
+              id:
+                type: string
+              filename:
+                type:
+                - string
+                - 'null'
+              content_type:
+                type:
+                - string
+                - 'null'
+              size:
+                type: integer
+                minimum: 0
+              url:
+                type: string
+                format: uri
+  responses:
+    AuthenticationError:
+      description: Missing or invalid API credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+externalDocs:
+  description: Developer API guide, examples, webhooks, and SDK documentation
+  url: https://tempmailgrab.com/api-docs

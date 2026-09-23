@@ -1,0 +1,111 @@
+openapi: 3.2.0
+info:
+  title: TempMailGrab API
+  version: 1.0.0
+  description: Create disposable email inboxes and read mail programmatically. OTP codes and verification links are auto-extracted from every message. Install the official JavaScript and TypeScript SDK for typed clients and test-runner helpers.
+  contact:
+    email: api@tempmailgrab.com
+  license:
+    name: Proprietary
+    url: https://tempmailgrab.com/terms
+servers:
+- url: https://tempmailgrab.com/api/v1
+security:
+- bearerAuth: []
+- apiKey: []
+tags:
+- name: TempMailGrab API
+paths: {}
+webhooks:
+  messageReceived:
+    post:
+      operationId: messageReceivedWebhook
+      summary: A parsed message was received
+      description: Signed with HMAC-SHA256 in X-TMG-Signature using the secret returned when the webhook was created.
+      parameters:
+      - name: X-TMG-Signature
+        in: header
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - event
+              - sent_at
+              - data
+              properties:
+                event:
+                  type: string
+                  const: email.received
+                sent_at:
+                  type: integer
+                  description: Unix timestamp in seconds.
+                data:
+                  $ref: '#/components/schemas/WebhookMessage'
+      responses:
+        '200':
+          description: Return any 2xx response to acknowledge delivery.
+      tags:
+      - TempMailGrab API
+components:
+  schemas:
+    WebhookMessage:
+      type: object
+      required:
+      - id
+      - inbox_address
+      - sender
+      - subject
+      - text_body
+      - html_body
+      - extracted_otp
+      - extracted_links
+      - timestamp
+      properties:
+        id:
+          type: string
+        inbox_address:
+          type: string
+          format: email
+        sender:
+          type: string
+        subject:
+          type:
+          - string
+          - 'null'
+        text_body:
+          type:
+          - string
+          - 'null'
+        html_body:
+          type:
+          - string
+          - 'null'
+        extracted_otp:
+          type:
+          - string
+          - 'null'
+        extracted_links:
+          type: array
+          items:
+            type: string
+            format: uri
+        timestamp:
+          type: integer
+          description: Unix timestamp in seconds.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+externalDocs:
+  description: Developer API guide, examples, webhooks, and SDK documentation
+  url: https://tempmailgrab.com/api-docs

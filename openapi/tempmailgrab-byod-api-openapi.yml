@@ -1,0 +1,95 @@
+openapi: 3.2.0
+info:
+  title: TempMailGrab Byod API
+  version: 1.0.0
+  description: Create disposable email inboxes and read mail programmatically. OTP codes and verification links are auto-extracted from every message. Install the official JavaScript and TypeScript SDK for typed clients and test-runner helpers.
+  contact:
+    email: api@tempmailgrab.com
+  license:
+    name: Proprietary
+    url: https://tempmailgrab.com/terms
+servers:
+- url: https://tempmailgrab.com/api/v1
+security:
+- bearerAuth: []
+- apiKey: []
+tags:
+- name: Byod
+paths:
+  /byod:
+    get:
+      operationId: listCustomDomains
+      summary: List custom domains registered to this API key
+      responses:
+        '200':
+          description: Custom-domain list
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+      tags:
+      - Byod
+    post:
+      operationId: createCustomDomain
+      summary: Register a custom domain and receive its DNS requirements
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - domain
+              properties:
+                domain:
+                  type: string
+                  example: mail.example.com
+      responses:
+        '201':
+          description: Pending custom domain and required MX/TXT records
+        '409':
+          description: Domain already registered
+      tags:
+      - Byod
+  /byod/{domain}/verify:
+    post:
+      operationId: verifyCustomDomain
+      summary: Verify custom-domain TXT ownership and MX routing
+      parameters:
+      - name: domain
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: DNS verification result
+        '404':
+          description: Domain not registered to this key
+      tags:
+      - Byod
+components:
+  schemas:
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+  responses:
+    AuthenticationError:
+      description: Missing or invalid API credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+externalDocs:
+  description: Developer API guide, examples, webhooks, and SDK documentation
+  url: https://tempmailgrab.com/api-docs

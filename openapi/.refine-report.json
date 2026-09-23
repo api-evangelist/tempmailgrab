@@ -1,0 +1,51 @@
+{
+  "provider": "tempmailgrab",
+  "sources": [
+    "_original/tempmailgrab-openapi.json"
+  ],
+  "outputs": [
+    "tempmailgrab-byod-api-openapi.yml",
+    "tempmailgrab-inbox-api-openapi.yml",
+    "tempmailgrab-messages-api-openapi.yml",
+    "tempmailgrab-tempmailgrab-api-api-openapi.yml",
+    "tempmailgrab-webhooks-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "1 archived document(s) dropped as subsets of other archived documents",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "tempmailgrab-openapi.json: upgraded openapi 3.1.2 -> OpenAPI 3.2.0",
+    "tempmailgrab-openapi.json: tagged paths POST /inbox -> Inbox",
+    "tempmailgrab-openapi.json: tagged paths DELETE /inbox/{id} -> Inbox",
+    "tempmailgrab-openapi.json: tagged paths GET /inbox/{id}/messages -> Inbox",
+    "tempmailgrab-openapi.json: tagged paths DELETE /inbox/{id}/messages -> Inbox",
+    "tempmailgrab-openapi.json: tagged paths GET /inbox/{id}/messages/{mid} -> Inbox",
+    "tempmailgrab-openapi.json: tagged paths POST /inbox/{id}/test-message -> Inbox",
+    "tempmailgrab-openapi.json: tagged paths GET /messages -> Messages",
+    "tempmailgrab-openapi.json: tagged paths GET /messages/{id} -> Messages",
+    "tempmailgrab-openapi.json: tagged paths POST /inbox/{id}/webhook -> Inbox",
+    "tempmailgrab-openapi.json: tagged paths GET /webhooks -> Webhooks",
+    "tempmailgrab-openapi.json: tagged paths POST /webhooks -> Webhooks",
+    "tempmailgrab-openapi.json: tagged paths DELETE /webhooks/{id} -> Webhooks",
+    "tempmailgrab-openapi.json: tagged paths GET /byod -> Byod",
+    "tempmailgrab-openapi.json: tagged paths POST /byod -> Byod",
+    "tempmailgrab-openapi.json: tagged paths POST /byod/{domain}/verify -> Byod",
+    "tempmailgrab-openapi.json: tagged webhooks POST messageReceived -> TempMailGrab API",
+    "tempmailgrab-openapi.json: declared missing tag: Byod",
+    "tempmailgrab-openapi.json: declared missing tag: Inbox",
+    "tempmailgrab-openapi.json: declared missing tag: Messages",
+    "tempmailgrab-openapi.json: declared missing tag: TempMailGrab API",
+    "tempmailgrab-openapi.json: declared missing tag: Webhooks",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "_original/tempmailgrab-openapi_2.json: archived document superseded by a larger archived document",
+    "tempmailgrab-byod-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "tempmailgrab-inbox-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "tempmailgrab-messages-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "tempmailgrab-tempmailgrab-api-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "tempmailgrab-webhooks-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

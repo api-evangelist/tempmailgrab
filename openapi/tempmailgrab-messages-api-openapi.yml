@@ -1,0 +1,143 @@
+openapi: 3.2.0
+info:
+  title: TempMailGrab Messages API
+  version: 1.0.0
+  description: Create disposable email inboxes and read mail programmatically. OTP codes and verification links are auto-extracted from every message. Install the official JavaScript and TypeScript SDK for typed clients and test-runner helpers.
+  contact:
+    email: api@tempmailgrab.com
+  license:
+    name: Proprietary
+    url: https://tempmailgrab.com/terms
+servers:
+- url: https://tempmailgrab.com/api/v1
+security:
+- bearerAuth: []
+- apiKey: []
+tags:
+- name: Messages
+paths:
+  /messages:
+    get:
+      operationId: listMessages
+      summary: List messages using the flat endpoint alias
+      parameters:
+      - name: inbox
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Message list
+        '404':
+          description: Inbox not found or expired
+      tags:
+      - Messages
+  /messages/{id}:
+    get:
+      operationId: getMessage
+      summary: Fetch one message by ID (flat alias)
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Full message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageDetail'
+        '404':
+          description: Message not found
+      tags:
+      - Messages
+components:
+  schemas:
+    MessageDetail:
+      type: object
+      required:
+      - id
+      - sender
+      - subject
+      - text_body
+      - html_body
+      - extracted_otp
+      - extracted_links
+      - raw_headers
+      - timestamp
+      - attachments
+      properties:
+        id:
+          type: string
+        sender:
+          type: string
+        subject:
+          type:
+          - string
+          - 'null'
+        text_body:
+          type:
+          - string
+          - 'null'
+        html_body:
+          type:
+          - string
+          - 'null'
+          description: Sanitized HTML.
+        extracted_otp:
+          type:
+          - string
+          - 'null'
+        extracted_links:
+          type: array
+          items:
+            type: string
+            format: uri
+        raw_headers:
+          type:
+          - string
+          - 'null'
+        timestamp:
+          type: integer
+          description: Unix timestamp in seconds.
+        attachments:
+          type: array
+          items:
+            type: object
+            required:
+            - id
+            - filename
+            - content_type
+            - size
+            - url
+            properties:
+              id:
+                type: string
+              filename:
+                type:
+                - string
+                - 'null'
+              content_type:
+                type:
+                - string
+                - 'null'
+              size:
+                type: integer
+                minimum: 0
+              url:
+                type: string
+                format: uri
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+externalDocs:
+  description: Developer API guide, examples, webhooks, and SDK documentation
+  url: https://tempmailgrab.com/api-docs
