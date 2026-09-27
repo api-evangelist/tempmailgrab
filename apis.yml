@@ -3,6 +3,22 @@ aid: tempmailgrab
 description: Privacy-first disposable/temporary email service with private 24-hour inboxes, real-time WebSocket delivery,
   automatic OTP and verification-link extraction, attachments, webhooks, custom domains, and a versioned REST API for QA,
   test automation, and bots.
+deliveryModel:
+  model: saas
+  license_evidence:
+    not_product:
+    - sathishbanoth-coder/tempmailgrab-js
+  open_source: unknown
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: low
+  source:
+  - openapi
+  - pricing
+  - repository-not-product
+  generated: '2026-09-25'
+  method: derived
 accessModel:
   pricing: freemium
   onboarding: self-serve
