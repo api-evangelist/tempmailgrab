@@ -255,32 +255,6 @@ components:
               url:
                 type: string
                 format: uri
-    Error:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: string
-    Inbox:
-      type: object
-      required:
-      - id
-      - address
-      - created_at
-      - expires_at
-      properties:
-        id:
-          type: string
-        address:
-          type: string
-          format: email
-        created_at:
-          type: integer
-          description: Unix timestamp in seconds.
-        expires_at:
-          type: integer
-          description: Unix timestamp in seconds.
     MessageSummary:
       type: object
       required:
@@ -308,6 +282,32 @@ components:
         created_at:
           type: integer
           description: Unix timestamp in seconds.
+    Inbox:
+      type: object
+      required:
+      - id
+      - address
+      - created_at
+      - expires_at
+      properties:
+        id:
+          type: string
+        address:
+          type: string
+          format: email
+        created_at:
+          type: integer
+          description: Unix timestamp in seconds.
+        expires_at:
+          type: integer
+          description: Unix timestamp in seconds.
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
   responses:
     AuthenticationError:
       description: Missing or invalid API credentials

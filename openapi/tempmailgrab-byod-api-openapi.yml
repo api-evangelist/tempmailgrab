@@ -67,13 +67,6 @@ paths:
       tags:
       - Byod
 components:
-  responses:
-    AuthenticationError:
-      description: Missing or invalid API credentials
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
     Error:
       type: object
@@ -82,6 +75,13 @@ components:
       properties:
         error:
           type: string
+  responses:
+    AuthenticationError:
+      description: Missing or invalid API credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     bearerAuth:
       type: http
