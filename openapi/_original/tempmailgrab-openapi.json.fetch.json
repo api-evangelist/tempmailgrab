@@ -1,0 +1,12 @@
+{
+ "url": "https://tempmailgrab.com/api/openapi.json",
+ "requested_url": "https://tempmailgrab.com/api/openapi.json",
+ "status": 200,
+ "content_type": "application/json",
+ "bytes": 9631,
+ "sha256": "93f6a62c6a9818c25fccb044c791fccd6b095d9822ae579f6d32d95d1e94e37a",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "equivalent",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the provider's current document describes the same operations (Jaccard 1.0), but the bytes differ, so the archive is an earlier or reformatted copy."
+}
