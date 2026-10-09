@@ -58,3 +58,25 @@ competitive_note: >-
   The provider publishes its own comparison on the pricing page: "Mailinator's team plan starts at $49/month
   (annual billing required). TempMailGrab Premium is $9/month with no annual commitment and no seat
   minimums."
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - free
+  - subscription
+  units: []
+  plans:
+  - name: Free
+    access: other
+    model: free
+    model_how: derived
+    units: []
+    periods:
+    - other
+  - name: Premium
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods:
+    - month
