@@ -9,13 +9,6 @@
       "method": "discovered"
     },
     {
-      "source": "https://tempmailgrab.com/contact",
-      "feed_url": "https://tempmailgrab.com/blog/rss.xml",
-      "title": "",
-      "saved": 0,
-      "method": "discovered"
-    },
-    {
       "source": "https://tempmailgrab.com/blog/rss.xml",
       "feed_url": "https://tempmailgrab.com/blog/rss.xml",
       "title": "",
@@ -24,5 +17,5 @@
     }
   ],
   "post_count": 31,
-  "fetched": "2026-10-03T12:30:02Z"
+  "fetched": "2026-10-10T13:15:00Z"
 }
