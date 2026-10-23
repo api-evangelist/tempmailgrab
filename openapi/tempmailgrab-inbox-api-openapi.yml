@@ -326,3 +326,9 @@ components:
 externalDocs:
   description: Developer API guide, examples, webhooks, and SDK documentation
   url: https://tempmailgrab.com/api-docs
+x-provenance:
+  method: harvested
+  publisher: TempMailGrab API
+  source: https://tempmailgrab.com/api/openapi.json
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)
